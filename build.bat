@@ -50,6 +50,7 @@ setlocal
 set BUILD_TYPE=%1
 set OPENSSL_INC=C:\Work\openssl-%BUILD_TYPE%\include
 set DEPLOY_PATH=C:\Qt5\msvc2015
+if "%1"=="release" set BUILD_OPTS=-ltcg
 
 echo.
 echo Build type: %BUILD_TYPE%
@@ -58,7 +59,7 @@ echo Binaries deploy path: %DEPLOY_PATH%
 echo.
 
 if not exist qtbase\tools\configure\Makefile (
-  call configure -prefix %DEPLOY_PATH% -developer-build -%BUILD_TYPE% -force-debug-info -opensource -confirm-license -openssl -I %OPENSSL_INC% -no-cetest -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
+  call configure -prefix %DEPLOY_PATH% -developer-build %BUILD_OPTS% -%BUILD_TYPE% -force-debug-info -opensource -confirm-license -target xp -opengl dynamic -openssl -I %OPENSSL_INC% -no-cetest -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
   echo After that, run `jom install' to copy all the stuff to %DEPLOY_PATH%.
 ) else (
   echo Run `jom' to build Qt, then run `jom install' to copy all the stuff to %DEPLOY_PATH%.
