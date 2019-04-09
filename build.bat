@@ -19,10 +19,9 @@ exit /b 1
 
 :check_args
 if "%1"=="clone" goto clone
-if "%1"=="debug" goto build
-if "%1"=="release" goto build
+if "%1"=="compile" goto compile
 if "%1"=="clean" goto clean
-echo Usage: %~n0 ^<clone^|debug^|release^|clean^>
+echo Usage: %~n0 ^<clone^|compile^|clean^>
 exit /b 1
 
 :clone
@@ -38,28 +37,25 @@ call git remote set-url origin https://github.com/denis-gz/qtbase.git
 popd
 :: Checkout to branch for in-house build
 call git fetch origin in-house
-call git checkout -f in-house
-call git pull --recurse-submodules
+call git checkout in-house
+call git submodule update --recursive
 if not exist %~nx0 copy ..\%~nx0 .
 echo.
 echo You are now in %CD%.
 exit /B 0
 
-:build
+:compile
 setlocal
-set BUILD_TYPE=%1
-set OPENSSL_INC=C:\Work\openssl-%BUILD_TYPE%\include
+set OPENSSL_INC=C:\Work\openssl-release\include
 set DEPLOY_PATH=C:\Qt5\msvc2015
-if "%1"=="release" set BUILD_OPTS=-ltcg
 
 echo.
-echo Build type: %BUILD_TYPE%
 echo OpenSSL include path: %OPENSSL_INC%
 echo Binaries deploy path: %DEPLOY_PATH%
 echo.
 
 if not exist qtbase\tools\configure\Makefile (
-  call configure -prefix %DEPLOY_PATH% -developer-build %BUILD_OPTS% -%BUILD_TYPE% -force-debug-info -opensource -confirm-license -target xp -opengl dynamic -openssl -I %OPENSSL_INC% -no-cetest -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
+  call configure -prefix %DEPLOY_PATH% -developer-build -debug-and-release -force-debug-info -opensource -confirm-license -target xp -opengl dynamic -openssl -I %OPENSSL_INC% -ltcg -no-cetest -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
   echo After that, run `jom install' to copy all the stuff to %DEPLOY_PATH%.
 ) else (
   echo Run `jom' to build Qt, then run `jom install' to copy all the stuff to %DEPLOY_PATH%.
