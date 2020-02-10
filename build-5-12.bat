@@ -59,11 +59,11 @@ echo Binaries deploy path: %DEPLOY_PATH%
 echo.
 
 if not exist qtbase\tools\configure\Makefile (
-  call configure -prefix %DEPLOY_PATH% -developer-build -debug-and-release -force-debug-info -opensource -confirm-license -opengl dynamic -openssl-runtime -I %OPENSSL_INC% -L %OPENSSL_LIB% -ltcg -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
-  echo After that, run `jom install' to copy all the stuff to %DEPLOY_PATH%.
-) else (
-  echo Run `jom' to build Qt, then run `jom install' to copy all the stuff to %DEPLOY_PATH%.
+  call configure -prefix %DEPLOY_PATH% -debug-and-release -force-debug-info -opensource -confirm-license -opengl dynamic -openssl-runtime -I %OPENSSL_INC% -L %OPENSSL_LIB% -ltcg -nomake examples -nomake tests -skip qtwebengine -mp -make-tool jom
 )
+
+C:\Qt\Tools\QtCreator\bin\jom.exe
+echo Run `jom install' to copy all the stuff to %DEPLOY_PATH%.
 exit /b 0
 
 :clean
